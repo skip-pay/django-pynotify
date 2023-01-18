@@ -15,7 +15,7 @@ requirements = [
     'beautifulsoup4 >=4.8.0',
     'celery >= 4.2.0',
     'django ~= 3.0',
-    'django-chamber >= 0.6.16',
+    'skip-django-chamber >= 0.6.16.3',
     'lxml >= 4.6.2',
 ]
 
@@ -41,9 +41,9 @@ setup(
     long_description=readme + '\n\n' + history,
     include_package_data=True,
     keywords='django-pynotify',
-    name='django-pynotify',
+    name='skip-django-pynotify',
     packages=find_packages(include=['pynotify']),
-    url='https://github.com/druids/django-pynotify',
-    version='0.5.5',
+    url='https://github.com/skip-pay/django-pynotify',
+    version='0.5.5.1',
     zip_safe=False,
 )
