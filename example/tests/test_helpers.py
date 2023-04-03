@@ -4,8 +4,10 @@ from django.core.exceptions import ImproperlyConfigured
 from django.dispatch import Signal
 from django.test import TestCase, override_settings
 
+from articles.models import Article
 from pynotify.helpers import (DeletedRelatedObject, SecureRelatedObject, autoload, get_from_context, get_import_path,
-                              process_task, register, signal_map)
+                              get_notification_model, parse_notification_model, process_task, register, signal_map)
+from pynotify.models import Notification
 
 from .test_app.signals import autoload_signal
 
@@ -44,6 +46,20 @@ class MockRelatedObject:
 
     def __str__(self):
         return 'Related object'
+
+
+class ArticleProxyModel(Article):
+
+    class Meta:
+        app_label = 'articles'
+        proxy = True
+
+
+class NotificationProxyModel(Notification):
+
+    class Meta:
+        app_label = 'articles'
+        proxy = True
 
 
 # TESTS -------------------------------------------------------------------------------------------
@@ -166,3 +182,30 @@ class HelpersTestCase(TestCase):
         self.assertEqual(get_from_context('obj', {'obj': related_object}), related_object)
         self.assertEqual(get_from_context('obj.b', {'obj': related_object}), 456)
         self.assertIsNone(get_from_context('obj.non_sense', {'obj': related_object}))
+
+    def test_parse_notification_model_parses_model_properly(self):
+        self.assertIs(parse_notification_model('pynotify.Notification'), Notification)
+
+    def test_parse_notification_model_rises_improperly_configured_error(self):
+        self.assertRaises(ImproperlyConfigured, lambda: parse_notification_model('my_app.my_module.MyModel'))
+        self.assertRaises(ImproperlyConfigured, lambda: parse_notification_model('MyModel'))
+
+    @override_settings(PYNOTIFY_NOTIFICATION_MODEL=None)
+    def test_get_notification_model_handles_no_notification_model_settings(self):
+        self.assertIs(get_notification_model(), Notification)
+
+    @override_settings(PYNOTIFY_NOTIFICATION_MODEL='pynotify.Notification')
+    def test_get_notification_model_handles_default_notification_model_correctly(self):
+        self.assertIs(get_notification_model(), Notification)
+
+    @override_settings(PYNOTIFY_NOTIFICATION_MODEL='articles.NotificationProxyModel')
+    def test_get_notification_model_handles_proxy_correctly(self):
+        self.assertIs(get_notification_model(), NotificationProxyModel)
+
+    @override_settings(PYNOTIFY_NOTIFICATION_MODEL='articles.Article')
+    def test_get_notification_model_raises_improperly_configured_error_when_model_is_not_proxy(self):
+        self.assertRaises(ImproperlyConfigured, get_notification_model)
+
+    @override_settings(PYNOTIFY_NOTIFICATION_MODEL='articles.ArticleProxyModel')
+    def test_get_notification_model_raises_improperly_configured_error_when_model_is_invalid_proxy(self):
+        self.assertRaises(ImproperlyConfigured, get_notification_model)

@@ -45,3 +45,7 @@ You can configure the library in Django settings. Following options are availabl
 * ``PYNOTIFY_TEMPLATE_TRANSLATE`` (default: ``False``)
 
     Boolean indicating if template string should be translated via ``gettext()`` before rendering.
+
+* ``PYNOTIFY_NOTIFICATION_MODEL`` (default: ``pynotify.Notification``)
+
+    String specifying a custom Notification model in '<app>.<model>' format. Currently, only proxy models are supported.

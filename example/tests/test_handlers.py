@@ -4,13 +4,12 @@ from unittest.mock import MagicMock
 from django.contrib.auth.models import User
 from django.core.exceptions import ImproperlyConfigured
 from django.dispatch import Signal
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from pynotify.dispatchers import BaseDispatcher
 from pynotify.handlers import BaseHandler
 from pynotify.helpers import signal_map
-from pynotify.models import AdminNotificationTemplate, NotificationTemplate
-
+from pynotify.models import AdminNotificationTemplate, Notification, NotificationTemplate
 
 # MOCK OBJECTS ------------------------------------------------------------------------------------
 
@@ -83,6 +82,13 @@ class TestSlugHandler(BaseHandler):
     class Meta:
         signal = test_signal_slug
         allowed_senders = (MockSender,)
+
+
+class CustomNotificationModel(Notification):
+
+    class Meta:
+        app_label = 'articles'
+        proxy = True
 
 
 # TESTS -------------------------------------------------------------------------------------------
@@ -193,3 +199,14 @@ class HandlerTestCase(TestCase):
         notifications = TestSlugHandler().handle(signal_kwargs={'recipients': [self.user1]})
         self.assertEqual(len(notifications), 1)
         self.assertEqual(notifications[0], self.user1.notifications.get())
+
+    def test_handler_should_use_default_notification_model(self):
+        notifications = TestSlugHandler().handle(signal_kwargs={'recipients': [self.user1]})
+        self.assertEqual(len(notifications), 1)
+        self.assertEqual(type(notifications[0]), Notification)
+
+    @override_settings(PYNOTIFY_NOTIFICATION_MODEL='articles.CustomNotificationModel')
+    def test_handler_should_use_custom_notification_model(self):
+        notifications = TestSlugHandler().handle(signal_kwargs={'recipients': [self.user1]})
+        self.assertEqual(len(notifications), 1)
+        self.assertEqual(type(notifications[0]), CustomNotificationModel)
