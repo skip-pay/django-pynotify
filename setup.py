@@ -44,6 +44,6 @@ setup(
     name='skip-django-pynotify',
     packages=find_packages(include=['pynotify']),
     url='https://github.com/skip-pay/django-pynotify',
-    version='0.5.5.1',
+    version='0.5.5.2',
     zip_safe=False,
 )
