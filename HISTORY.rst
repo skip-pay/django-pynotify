@@ -2,6 +2,11 @@
 History
 =======
 
+Not released yet
+----------------
+
+* Add support for custom Notification model specification.
+
 0.5.5 (2023-01-03)
 ------------------
 

@@ -1,17 +1,16 @@
 import datetime
-import pytz
 from decimal import Decimal
 
+import pytz
+from chamber.exceptions import PersistenceException
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
-from django.utils.translation import override, gettext_noop
-from chamber.exceptions import PersistenceException
-
-from pynotify.exceptions import MissingContextVariableError
-from pynotify.helpers import DeletedRelatedObject, SecureRelatedObject
-from pynotify.models import AdminNotificationTemplate, Notification, NotificationTemplate, TEMPLATE_FIELDS
+from django.utils.translation import gettext_noop, override
 
 from articles.models import Article
+from pynotify.exceptions import MissingContextVariableError
+from pynotify.helpers import DeletedRelatedObject, SecureRelatedObject
+from pynotify.models import TEMPLATE_FIELDS, AdminNotificationTemplate, Notification, NotificationTemplate
 
 
 class AdminNotificationTemplateTestCase(TestCase):

@@ -1,8 +1,9 @@
-from importlib import import_module
 import logging
+from importlib import import_module
 from pydoc import locate
 
 from bs4 import BeautifulSoup
+from django.apps import apps
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext as _
 
@@ -161,3 +162,30 @@ def strip_html(value):
     # The space is added to remove BS warnings because value "http://django.pynotify.com"
     # will be considered as URL not as string in BS. The space will be removed with get_text method.
     return BeautifulSoup(' ' + value, 'lxml').get_text()
+
+
+def parse_notification_model(model_reference_string):
+    parts = model_reference_string.split('.')
+    if len(parts) == 2:
+        return apps.get_model(*parts)
+    else:
+        raise ImproperlyConfigured(
+            f'Invalid NOTIFICATION_MODEL string. Expected format "<app>.<model>", got: "{model_reference_string}"'
+        )
+
+
+def get_notification_model():
+    """
+    We allow users to specify their own model for notifications. When specified in settings the model
+    will replace models.Notification. Currently, only proxy models are supported.
+    """
+    from pynotify.models import Notification
+
+    if settings.NOTIFICATION_MODEL:
+        model = parse_notification_model(settings.NOTIFICATION_MODEL)
+        if model is Notification or model._meta.proxy_for_model is Notification:
+            return model
+        else:
+            raise ImproperlyConfigured(f'Specified notification model "{model}" is not a proxy model for Notification')
+    else:
+        return Notification

@@ -3,8 +3,8 @@ from collections.abc import Iterable
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.functional import cached_property
 
-from .helpers import register
-from .models import AdminNotificationTemplate, Notification, NotificationTemplate
+from .helpers import get_notification_model, register
+from .models import AdminNotificationTemplate, NotificationTemplate
 
 
 class HandlerMeta(type):
@@ -102,7 +102,7 @@ class BaseHandler(metaclass=HandlerMeta):
         Creates notification for ``recipient``.
         """
         if self._can_create_notification(recipient):
-            return Notification.objects.create(
+            return get_notification_model().objects.create(
                 recipient=recipient,
                 template=self._template,
                 related_objects=self.get_related_objects(),
