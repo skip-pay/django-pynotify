@@ -15,7 +15,7 @@ from .test_app.signals import autoload_signal
 # MOCK OBJECTS ------------------------------------------------------------------------------------
 
 
-test_signal = Signal(providing_args=['abc'])
+test_signal = Signal()
 
 
 class MockHandler1(MagicMock):

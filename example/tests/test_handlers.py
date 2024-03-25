@@ -14,8 +14,8 @@ from pynotify.models import AdminNotificationTemplate, Notification, Notificatio
 # MOCK OBJECTS ------------------------------------------------------------------------------------
 
 
-test_signal_data = Signal(providing_args=['recipients'])
-test_signal_slug = Signal(providing_args=['recipients'])
+test_signal_data = Signal()
+test_signal_slug = Signal()
 
 
 class MockNotification:

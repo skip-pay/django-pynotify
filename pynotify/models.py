@@ -238,6 +238,9 @@ class Notification(BaseModel, metaclass=NotificationMeta):
         return self._clean_json_value(self.extra_data)
 
     def clean(self):
+        if self.is_adding:
+            return
+
         keys = set(self.extra_data or {}) & set(obj.name for obj in self.related_objects.all() if obj.name)
         if keys:
             raise ValidationError('Related objects and extra data contain same key(s): {}'.format(', '.join(keys)))

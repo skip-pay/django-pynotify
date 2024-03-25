@@ -14,8 +14,8 @@ with open('HISTORY.rst') as history_file:
 requirements = [
     'beautifulsoup4 >=4.8.0',
     'celery >= 4.2.0',
-    'django ~= 3.0',
-    'skip-django-chamber >= 0.6.16.3',
+    'django>=4.2',
+    'skip-django-chamber @ git+https://github.com/skip-pay/django-chamber@tda/chore/django_bump',
     'lxml >= 4.6.2',
 ]
 
@@ -44,6 +44,6 @@ setup(
     name='skip-django-pynotify',
     packages=find_packages(include=['pynotify']),
     url='https://github.com/skip-pay/django-pynotify',
-    version='0.5.5.2',
+    version='0.6.0',
     zip_safe=False,
 )
