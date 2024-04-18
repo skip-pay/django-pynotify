@@ -15,7 +15,7 @@ requirements = [
     'beautifulsoup4 >=4.8.0',
     'celery >= 4.2.0',
     'django>=4.2',
-    'skip-django-chamber @ git+https://github.com/skip-pay/django-chamber@tda/chore/django_bump',
+    'skip-django-chamber>=0.7.2',
     'lxml >= 4.6.2',
 ]
 
