@@ -2,8 +2,8 @@ from .handlers import BaseHandler
 from .models import TEMPLATE_FIELDS
 
 
-def notify(recipients, related_objects=None, extra_data=None, template_slug=None, dispatcher_classes=None,
-           **template_fields):
+def notify(recipients, related_objects=None, extra_data=None, template_slug=None, template_locale=None,
+           dispatcher_classes=None, **template_fields):
     """
     Helper method to simplify notification creation without the need to define signal and handler.
     """
@@ -16,6 +16,7 @@ def notify(recipients, related_objects=None, extra_data=None, template_slug=None
         'related_objects': related_objects,
         'extra_data': extra_data,
         'template_slug': template_slug,
+        'template_locale': template_locale,
         'dispatcher_classes': dispatcher_classes,
         **template_fields,
     })
@@ -39,6 +40,9 @@ class NotifyHandler(BaseHandler):
 
     def get_template_slug(self):
         return self.signal_kwargs['template_slug']
+
+    def get_template_locale(self):
+        return self.signal_kwargs['template_locale']
 
     def get_dispatcher_classes(self):
         return self.signal_kwargs['dispatcher_classes'] or ()
